@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: animal-name-generator-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: animal-name-generator-service
+  template:
+    metadata:
+      labels:
+        app: animal-name-generator-service
+    spec:
+      containers:
+      - name: animal-name-generator-service
+        image: docker.io/ozer550/animal-name-generator-service
+        ports:
+        - containerPort: 9000
+        env:
+        - name: JAEGER_AGENT_HOST
+          value: jaeger-agent
+        - name: JAEGER_AGENT_PORT
+          value: "6831"
+      imagePullSecrets:
+        - name: quaysecret
