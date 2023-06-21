@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: scientist-name-generator-service
-        image: docker.io/ozer550/scientist-name-generator-service
+        image: quay.io/pradesai550/scientist-name-generator-service
         ports:
         - containerPort: 8090
         env:
