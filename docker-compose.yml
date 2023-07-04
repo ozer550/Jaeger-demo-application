@@ -1,26 +1,50 @@
 version: "3.4"
 services:
-  animal-name-service:
-    image: com.example/animal-name-service:0.1.0
-    restart: on-failure
-    environment:
-      - SPRING_PROFILES_ACTIVE=prod
-      - SPRING_APPLICATION_NAME=animal-name-service
-  scientist-name-service:
-    image: com.example/scientist-name-service:0.1.0
-    restart: on-failure
-    environment:
-      - SPRING_PROFILES_ACTIVE=prod
-      - SPRING_APPLICATION_NAME=scientist-name-service
-  name-generator-service:
-    image: com.example/name-generator-service:0.1.0
-    restart: on-failure
-    environment:
-      - SPRING_PROFILES_ACTIVE=prod
-      - SPRING_APPLICATION_NAME=name-generator-service
-    ports:
-      - "8080:8080"
+  # animal-name-service:
+  #   image: com.example/animal-name-service:0.1.0
+  #   restart: on-failure
+  #   environment:
+  #     - SPRING_PROFILES_ACTIVE=prod
+  #     - SPRING_APPLICATION_NAME=animal-name-service
+  # scientist-name-service:
+  #   image: com.example/scientist-name-service:0.1.0
+  #   restart: on-failure
+  #   environment:
+  #     - SPRING_PROFILES_ACTIVE=prod
+  #     - SPRING_APPLICATION_NAME=scientist-name-service
+  # name-generator-service:
+  #   image: com.example/name-generator-service:0.1.0
+  #   restart: on-failure
+  #   environment:
+  #     - SPRING_PROFILES_ACTIVE=prod
+  #     - SPRING_APPLICATION_NAME=name-generator-service
+  #   ports:
+  #     - "8080:8080"
   jaeger:
-    image: jaegertracing/all-in-one:1.17
+    image: jaegertracing/all-in-one:1.45
     ports:
       - 9090:16686
+      - 6831:6831/udp
+      - 5775:5775/udp
+      - 6832:6832/udp
+      - 5778:5778
+      - 16686:16686
+      - 14268:14268
+      - 9411:9411
+      - 14250:14250
+
+  collector:
+    labels:
+      - "security.selinux.options=z"
+    image: otel/opentelemetry-collector:latest
+    container_name: collector
+    hostname: collector
+    depends_on:
+      jaeger:
+        condition: service_healthy
+    command: ["--config=/etc/otelcol/config/config.yaml"]
+    volumes:
+      - ./collector-config-local.yaml:/etc/otelcol/config/config.yaml:z
+    ports:
+      - "5555:5555"
+      - "6666:6666"
