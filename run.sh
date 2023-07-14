@@ -1,9 +1,9 @@
 #!/bin/bash
 
-AGENT_FILE=opentelemetry-javaagent-all.jar
+AGENT_FILE=opentelemetry-javaagent.jar
 
 if [ ! -f "${AGENT_FILE}" ]; then
-  curl -L https://github.com/aws-observability/aws-otel-java-instrumentation/releases/download/v1.19.2/aws-opentelemetry-agent.jar --output ${AGENT_FILE}
+  curl -O -L https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases/latest/download/opentelemetry-javaagent.jar --output ${AGENT_FILE}
 fi
 
 directories=("animal-name-service" "scientist-name-service" "name-generator-service")
