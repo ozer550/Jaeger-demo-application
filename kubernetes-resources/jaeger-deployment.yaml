@@ -61,5 +61,7 @@ spec:
   - name: jaeger-zipkin
     port: 9411
     targetPort: 9411
+  type: NodePort
+    
 
 
