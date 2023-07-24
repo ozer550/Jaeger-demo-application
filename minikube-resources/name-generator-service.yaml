@@ -26,5 +26,7 @@ spec:
           value: http://scientist-name-generator-service:8090
         - name: animal_service_prefix_url
           value: http://animal-name-generator-service:9000
+        - name: opentracing.jaeger.udp-sender.host  
+          value: jaeger.default.svc.cluster.local   
       imagePullSecrets:
         - name: quaysecret
