@@ -22,7 +22,7 @@ spec:
           value: jaeger-agent
         - name: JAEGER_AGENT_PORT
           value: "6831"
-        - name: opentracing.jaeger.udp-sender.host   
+        - name: UDP_HOST  
           value: jaeger.default.svc.cluster.local  
       imagePullSecrets:
         - name: quaysecret

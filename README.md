@@ -1,5 +1,77 @@
-This is a setup for demo-application along with Jaeger to run on Minikube:
+# What is this demo about
+This demo is a small setup which connectes jaeger with a demo application and prints out dependencies of mircoservices in kruize log.
 
+# Clone demo application and build docker images  
+"one time setup"
+- we will first clone the demo repository.
+
+```
+git clone git@github.com:himankbatra/opentracing-microservices-example.git
+```
+- Navigate to cloned directory
+
+```
+cd opentracing-microservices-example
+```  
+
+## Changing the application.properties
+
+We need to navigate to each of the 3 services folders and change the variable called *opentracing.jaeger.udp-sender.host* present in application.properties file.
+
+navigate to: 
+- animal-name-service/src/main/resources
+- scientist-name-service/src/main/resources/
+- name-generator-service/src/main/resources/
+
+and open the application.properties file
+
+Change the variable to:
+opentracing.jaeger.udp-sender.host=${UDP_HOST}
+
+And add the following variable according to services(this is required for Jaeger UI)
+spring.application.name=name-generator-service/scientist-name-service/name-generator-service
+
+
+We populate this variable through yaml files 
+
+Once we saved the changes to all these files we will build the image for all three services one by one.
+
+## Build image for name-generator-service
+
+- Navigate to name-generator-service
+
+```
+cd name-generator-service
+```
+
+- Build the project
+
+```
+mvn clean package
+```
+
+- Build the docker file
+
+```
+docker build -t name-generator-service:v1 .
+```
+
+- Tag the image
+```
+docker tag name-generator-service:v1 quay.io/<quay username>/name-generator-service
+```
+
+(you should be logged in your quay account)
+- Push the image
+```
+docker push quay.io/<quay username>/name-generator-service;
+```
+
+you can use the name of the images pushed in various yaml files provided(can change the image name to your image).
+
+Repeate the build process for all the remaining services.(just need to change the name of services in the above command)
+
+# Minikube setup
 - Start minikube with 
 
 ```
@@ -9,28 +81,43 @@ minikube start
 - In the current directory apply all the files to deploy setup:
 
 ```
-kubectl apply -f kubernetes-resources    
+kubectl apply -f minikube-resources    
 ```
 
-- Portforward jaeger
+# Resuts
 
+- Get the minikube ip
 ```
-kubectl port-forward svc/jaeger 16686:16686
-```
-
-- You can access the application at 
-
-```
-http://192.168.49.2:30080/api/v1/names/random
+minikube ip
 ```
 
-- To watch the dependencies:
+- We can find all associated nodeports using the follwoing command:
 ```
-http://localhost:16686/api/dependencies?endTs=1690189974936&lookback=604800000
+kubectl get svc
+```
+
+To browse the jaeger UI:
+```
+<minikube ip>:<node port assigned to jaeger 16686>/search
+
+ex:http://192.168.49.2:30580/
+```
+
+To Access the application:
+```
+http://<minikube ip>:<node port assigned to name generator service>/api/v1/names/random
+
+ex:http://192.168.49.2:31190/api/v1/names/random
+```
+
+To see the dependencies:
+```
+<minikube ip>:<node port assigned to jaeger 16686>/api/dependencies?endTs=1690274788249&lookback=604800000
+
+example: http://192.168.49.2:30580/api/dependencies?endTs=1690274788249&lookback=604800000
 ```
 
 *endTs*=1690189974936
-
 *Value*: 1690189974936
 Unit: This value represents a timestamp in milliseconds since January 1, 1970 (Unix timestamp in milliseconds).
 
