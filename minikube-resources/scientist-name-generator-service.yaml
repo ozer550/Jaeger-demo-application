@@ -26,3 +26,18 @@ spec:
           value: jaeger.default.svc.cluster.local  
       imagePullSecrets:
         - name: quaysecret
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: scientist-name-generator-service
+spec:
+  selector:
+    app: scientist-name-generator-service
+  ports:
+  - name: http
+    protocol: TCP
+    port: 8090
+    targetPort: 8090
+  type: NodePort
+
