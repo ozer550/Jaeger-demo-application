@@ -112,14 +112,16 @@ ex:http://192.168.49.2:31190/api/v1/names/random
 
 To see the dependencies:
 ```
-<minikube ip>:<node port assigned to jaeger 16686>/api/dependencies?endTs=1690274788249&lookback=604800000
+<minikube ip>:<node port assigned to jaeger 16686>/api/dependencies?endTs=<current time stamp>&lookback=604800000
 
 example: http://192.168.49.2:30580/api/dependencies?endTs=1690274788249&lookback=604800000
 ```
 
+Best way to see the results without calculations would be to open Jaeger Ui from above given steps and the open dependencies. open the network tab from developertools and see the api call to watch the usage of api.
+
 *endTs*=1690189974936
 *Value*: 1690189974936
-Unit: This value represents a timestamp in milliseconds since January 1, 1970 (Unix timestamp in milliseconds).
+Unit: This value represents present moment or current timestamp in milliseconds since January 1, 1970 (Unix timestamp in milliseconds).
 
 *lookback*=604800000
 
